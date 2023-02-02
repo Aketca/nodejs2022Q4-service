@@ -27,11 +27,23 @@ export class UsersService {
     return this.users.find((item) => item.id === id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    const item = this.users.find((item) => item.id === id);
+    if (updateUserDto.oldPassword !== item.password) {
+      return 403;
+    } else if (item) {
+      item.password = updateUserDto.newPassword;
+      return item;
+    }
+    return undefined;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    const index = this.users.findIndex((item) => item.id === id);
+    if (index > -1) {
+      this.users.splice(index, 1);
+      return 'User was removed';
+    }
+    return undefined;
   }
 }
