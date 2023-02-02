@@ -29,9 +29,10 @@ export class UsersService {
 
   update(id: string, updateUserDto: UpdateUserDto) {
     const item = this.users.find((item) => item.id === id);
-    if (updateUserDto.oldPassword !== item.password) {
+    if (item && updateUserDto.oldPassword !== item.password) {
       return 403;
-    } else if (item) {
+    }
+    if (item) {
       item.password = updateUserDto.newPassword;
       return item;
     }

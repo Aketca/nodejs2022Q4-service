@@ -1,26 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { Track } from './entities/track.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TracksService {
+  private readonly tracks: Track[] = [];
   create(createTrackDto: CreateTrackDto) {
-    return 'This action adds a new track';
+    const track = {
+      id: uuidv4(),
+      ...createTrackDto,
+    };
+    this.tracks.push(track);
+    return track;
   }
 
   findAll() {
-    return `This action returns all tracks`;
+    return this.tracks;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} track`;
+  findOne(id: string) {
+    return this.tracks.find((item) => item.id === id);
   }
 
-  update(id: number, updateTrackDto: UpdateTrackDto) {
-    return `This action updates a #${id} track`;
+  update(id: string, updateTrackDto: UpdateTrackDto) {
+    const item = this.tracks.find((item) => item.id === id);
+    if (item) {
+      item.name = updateTrackDto.name;
+      item.artistId = updateTrackDto.artistId;
+      item.albumId = updateTrackDto.albumId;
+      item.duration = updateTrackDto.duration;
+      return item;
+    }
+    return undefined;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} track`;
+  remove(id: string) {
+    const index = this.tracks.findIndex((item) => item.id === id);
+    if (index > -1) {
+      this.tracks.splice(index, 1);
+      return 'User was removed';
+    }
+    return undefined;
   }
 }
