@@ -16,7 +16,9 @@ export class UsersService {
       version: 1,
     };
     this.users.push(user);
-    return user;
+    const res = { ...user };
+    delete res.password;
+    return res;
   }
 
   findAll() {
@@ -29,12 +31,17 @@ export class UsersService {
 
   update(id: string, updateUserDto: UpdateUserDto) {
     const item = this.users.find((item) => item.id === id);
-    if (item && updateUserDto.oldPassword !== item.password) {
-      return 403;
-    }
     if (item) {
-      item.password = updateUserDto.newPassword;
-      return item;
+      if (updateUserDto.oldPassword === item.password) {
+        item.password = updateUserDto.newPassword;
+        item.version = item.version + 1;
+        item.updatedAt = Date.now();
+        const res = { ...item };
+        delete res.password;
+        return res;
+      } else {
+        return 403;
+      }
     }
     return undefined;
   }

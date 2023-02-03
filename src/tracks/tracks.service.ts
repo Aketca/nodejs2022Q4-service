@@ -40,7 +40,7 @@ export class TracksService {
     const index = this.tracks.findIndex((item) => item.id === id);
     if (index > -1) {
       this.tracks.splice(index, 1);
-      return 'User was removed';
+      return 'Track was removed';
     }
     return undefined;
   }

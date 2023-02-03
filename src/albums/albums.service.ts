@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { Album } from './entities/album.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AlbumsService {
+  private readonly albums: Album[] = [];
   create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+    const user = {
+      id: uuidv4(),
+      ...createAlbumDto,
+    };
+    this.albums.push(user);
+    return user;
   }
 
   findAll() {
-    return `This action returns all albums`;
+    return this.albums;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} album`;
+  findOne(id: string) {
+    return this.albums.find((item) => item.id === id);
   }
 
-  update(id: number, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
+  update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const item = this.albums.find((item) => item.id === id);
+    if (item) {
+      item.name = updateAlbumDto.name;
+      item.year = updateAlbumDto.year;
+      item.artistId = updateAlbumDto.artistId;
+      return item;
+    }
+    return undefined;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} album`;
+  remove(id: string) {
+    const index = this.albums.findIndex((item) => item.id === id);
+    if (index > -1) {
+      this.albums.splice(index, 1);
+      return 'Album was removed';
+    }
+    return undefined;
   }
 }
