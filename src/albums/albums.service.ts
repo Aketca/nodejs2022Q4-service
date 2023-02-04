@@ -13,7 +13,6 @@ export class AlbumsService {
       ...createAlbumDto,
     };
     this.albums.push(user);
-    console.log(this.albums, user);
     return user;
   }
 

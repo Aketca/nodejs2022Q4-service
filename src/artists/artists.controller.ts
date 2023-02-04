@@ -25,10 +25,10 @@ import { AlbumsService } from '../albums/albums.service';
 export class ArtistsController {
   constructor(
     @Inject(forwardRef(() => FavoritesService))
-    @Inject(forwardRef(() => TracksService))
-    @Inject(forwardRef(() => AlbumsService))
     private readonly favoritesService: FavoritesService,
+    @Inject(forwardRef(() => TracksService))
     private readonly tracksService: TracksService,
+    @Inject(forwardRef(() => AlbumsService))
     private readonly albumsService: AlbumsService,
     private readonly artistsService: ArtistsService,
   ) {}
