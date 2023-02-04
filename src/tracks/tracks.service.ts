@@ -24,6 +24,15 @@ export class TracksService {
     return this.tracks.find((item) => item.id === id);
   }
 
+  findAllByIds(ids: Array<string>) {
+    const result = [];
+    ids.forEach((id) => {
+      const el = this.findOne(id);
+      result.push(el);
+    });
+    return result;
+  }
+
   update(id: string, updateTrackDto: UpdateTrackDto) {
     const item = this.tracks.find((item) => item.id === id);
     if (item) {
@@ -43,5 +52,23 @@ export class TracksService {
       return 'Track was removed';
     }
     return undefined;
+  }
+
+  removeAlbumId(id: string) {
+    this.tracks.forEach((item, index) => {
+      if (item.albumId === id) {
+        item.albumId = null;
+        this.tracks[index] = item;
+      }
+    });
+  }
+
+  removeArtistId(id: string) {
+    this.tracks.forEach((item, index) => {
+      if (item.artistId === id) {
+        item.artistId = null;
+        this.tracks[index] = item;
+      }
+    });
   }
 }

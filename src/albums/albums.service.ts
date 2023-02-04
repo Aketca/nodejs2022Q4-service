@@ -7,12 +7,13 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class AlbumsService {
   private readonly albums: Album[] = [];
-  create(createAlbumDto: CreateAlbumDto) {
+  async create(createAlbumDto: CreateAlbumDto) {
     const user = {
       id: uuidv4(),
       ...createAlbumDto,
     };
     this.albums.push(user);
+    console.log(this.albums, user);
     return user;
   }
 
@@ -22,6 +23,15 @@ export class AlbumsService {
 
   findOne(id: string) {
     return this.albums.find((item) => item.id === id);
+  }
+
+  findAllByIds(ids: Array<string>) {
+    const result = [];
+    ids.forEach((id) => {
+      const el = this.findOne(id);
+      result.push(el);
+    });
+    return result;
   }
 
   update(id: string, updateAlbumDto: UpdateAlbumDto) {
@@ -42,5 +52,14 @@ export class AlbumsService {
       return 'Album was removed';
     }
     return undefined;
+  }
+
+  removeArtistId(id: string) {
+    this.albums.forEach((item, index) => {
+      if (item.artistId === id) {
+        item.artistId = null;
+        this.albums[index] = item;
+      }
+    });
   }
 }

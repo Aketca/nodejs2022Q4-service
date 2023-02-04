@@ -9,16 +9,23 @@ import {
   ParseUUIDPipe,
   HttpCode,
   UseInterceptors,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { ResponseInterceptor } from '../response.interceptor';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Controller('track')
 @UseInterceptors(ResponseInterceptor)
 export class TracksController {
-  constructor(private readonly tracksService: TracksService) {}
+  constructor(
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly favoritesService: FavoritesService,
+    private readonly tracksService: TracksService,
+  ) {}
 
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
@@ -45,7 +52,8 @@ export class TracksController {
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    await this.favoritesService.removeTrack(id);
     return this.tracksService.remove(id);
   }
 }

@@ -9,16 +9,24 @@ import {
   UseInterceptors,
   ParseUUIDPipe,
   HttpCode,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ResponseInterceptor } from '../response.interceptor';
+import { FavoritesService } from '../favorites/favorites.service';
+import { TracksService } from '../tracks/tracks.service';
 
 @Controller('album')
 @UseInterceptors(ResponseInterceptor)
 export class AlbumsController {
   constructor(
+    @Inject(forwardRef(() => TracksService))
+    @Inject(forwardRef(() => FavoritesService))
+    private readonly tracksService: TracksService,
+    private readonly favoritesService: FavoritesService,
     private readonly albumsService: AlbumsService,
   ) {}
 
@@ -47,8 +55,9 @@ export class AlbumsController {
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
-    // ТУТ УДАЛЯЕМ ВСЕ ID ИЗ ВСЕХ ТРЕКОВ ГДЕ ОНИ ЕСТЬ
+  async remove(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+    await this.favoritesService.removeAlbum(id);
+    await this.tracksService.removeAlbumId(id);
     return this.albumsService.remove(id);
   }
 }

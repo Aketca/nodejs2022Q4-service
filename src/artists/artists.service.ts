@@ -16,12 +16,21 @@ export class ArtistsService {
     return artist;
   }
 
-  findAll() {
+  async findAll() {
     return this.artists;
   }
 
   findOne(id: string) {
     return this.artists.find((item) => item.id === id);
+  }
+
+  findAllByIds(ids: Array<string>) {
+    const result = [];
+    ids.forEach((id) => {
+      const el = this.findOne(id);
+      result.push(el);
+    });
+    return result;
   }
 
   update(id: string, updateArtistDto: UpdateArtistDto) {
