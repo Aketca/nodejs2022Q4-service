@@ -1,11 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class TracksService {
+  @Inject(forwardRef(() => FavoritesService))
+  private readonly favoritesService: FavoritesService;
   private readonly tracks: Track[] = [];
   create(createTrackDto: CreateTrackDto) {
     const track = {
@@ -48,6 +51,7 @@ export class TracksService {
   remove(id: string) {
     const index = this.tracks.findIndex((item) => item.id === id);
     if (index > -1) {
+      this.favoritesService.removeTrack(id);
       this.tracks.splice(index, 1);
       return 'Track was removed';
     }

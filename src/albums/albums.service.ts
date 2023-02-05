@@ -1,11 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { TracksService } from '../tracks/tracks.service';
+import { FavoritesService } from '../favorites/favorites.service';
 
 @Injectable()
 export class AlbumsService {
+  @Inject(forwardRef(() => TracksService))
+  private readonly tracksService: TracksService;
+  @Inject(forwardRef(() => FavoritesService))
+  private readonly favoritesService: FavoritesService;
   private readonly albums: Album[] = [];
   async create(createAlbumDto: CreateAlbumDto) {
     const user = {
@@ -47,6 +53,8 @@ export class AlbumsService {
   remove(id: string) {
     const index = this.albums.findIndex((item) => item.id === id);
     if (index > -1) {
+      this.favoritesService.removeAlbum(id);
+      this.tracksService.removeAlbumId(id);
       this.albums.splice(index, 1);
       return 'Album was removed';
     }
