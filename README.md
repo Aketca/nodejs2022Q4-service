@@ -1,3 +1,5 @@
+Сваггер локально в проект не устанавливался, схема правилась и можно проверить на https://editor.swagger.io
+
 # Home Library Service
 
 ## Prerequisites
