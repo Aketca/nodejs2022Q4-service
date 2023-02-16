@@ -1,78 +1,76 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+// import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
-import { v4 as uuidv4 } from 'uuid';
-import { FavoritesService } from '../favorites/favorites.service';
+// import { v4 as uuidv4 } from 'uuid';
+// import { FavoritesService } from '../favorites/favorites.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TracksService {
-  @Inject(forwardRef(() => FavoritesService))
-  private readonly favoritesService: FavoritesService;
-  private readonly tracks: Track[] = [];
-  create(createTrackDto: CreateTrackDto) {
-    const track = {
-      id: uuidv4(),
-      ...createTrackDto,
-    };
-    this.tracks.push(track);
-    return track;
+  // @Inject(forwardRef(() => FavoritesService))
+  // private readonly favoritesService: FavoritesService;
+
+  constructor(
+    @InjectRepository(Track)
+    private trackRepository: Repository<Track>,
+  ) {}
+
+  async create(createTrackDto: CreateTrackDto) {
+    const createdTrack = this.trackRepository.create(createTrackDto);
+    return await this.trackRepository.save(createdTrack);
   }
 
-  findAll() {
-    return this.tracks;
+  async findAll() {
+    return await this.trackRepository.find();
   }
 
-  findOne(id: string) {
-    return this.tracks.find((item) => item.id === id);
+  async findOne(id: string) {
+    return await this.trackRepository.findOne({ where: { id: id } });
   }
 
-  findAllByIds(ids: Array<string>) {
-    const result = [];
-    ids.forEach((id) => {
-      const el = this.findOne(id);
-      result.push(el);
-    });
-    return result;
-  }
+  // async findAllByIds(ids: Array<string>) {
+  //   const result = [];
+  //   ids.forEach((id) => {
+  //     const el = this.findOne(id);
+  //     result.push(el);
+  //   });
+  //   return result;
+  // }
 
-  update(id: string, updateTrackDto: UpdateTrackDto) {
-    const item = this.tracks.find((item) => item.id === id);
-    if (item) {
-      item.name = updateTrackDto.name;
-      item.artistId = updateTrackDto.artistId;
-      item.albumId = updateTrackDto.albumId;
-      item.duration = updateTrackDto.duration;
-      return item;
+  async update(id: string, updateTrackDto: UpdateTrackDto) {
+    const updatedTrack = await this.findOne(id);
+    if (updatedTrack) {
+      Object.assign(updatedTrack, updateTrackDto);
+      return await this.trackRepository.save(updatedTrack);
     }
     return undefined;
   }
 
-  remove(id: string) {
-    const index = this.tracks.findIndex((item) => item.id === id);
-    if (index > -1) {
-      this.favoritesService.removeTrack(id);
-      this.tracks.splice(index, 1);
-      return 'Track was removed';
+  async remove(id: string) {
+    const result = await this.trackRepository.delete(id);
+    if (result.affected === 0) {
+      return undefined;
+    } else {
+      return 'success';
     }
-    return undefined;
   }
 
-  removeAlbumId(id: string) {
-    this.tracks.forEach((item, index) => {
-      if (item.albumId === id) {
-        item.albumId = null;
-        this.tracks[index] = item;
-      }
-    });
-  }
-
-  removeArtistId(id: string) {
-    this.tracks.forEach((item, index) => {
-      if (item.artistId === id) {
-        item.artistId = null;
-        this.tracks[index] = item;
-      }
-    });
-  }
+  // async removeAlbumId(id: string) {
+  //   const updatedTrack = await this.findOne(id);
+  //   return await this.update(id, {
+  //     ...updatedTrack,
+  //     albumId: null,
+  //   });
+  // }
+  //
+  // async removeArtistId(id: string) {
+  //   const updatedTrack = await this.findOne(id);
+  //   return await this.update(id, {
+  //     ...updatedTrack,
+  //     artistId: null,
+  //   });
+  // }
 }

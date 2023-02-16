@@ -112,16 +112,16 @@ export class FavoritesService {
   }
 
   returnAllFavorites() {
-    const favoriteTracks = this.findAllTracks();
-    const favoriteAlbums = this.findAllAlbums();
-    const favoriteArtists = this.findAllArtists();
-    const tracks = this.tracksService.findAllByIds(favoriteTracks);
-    const albums = this.albumsService.findAllByIds(favoriteAlbums);
-    const artists = this.artistsService.findAllByIds(favoriteArtists);
-    return {
-      tracks,
-      albums,
-      artists,
-    };
+    // const favoriteTracks = this.findAllTracks();
+    // const favoriteAlbums = this.findAllAlbums();
+    // const favoriteArtists = this.findAllArtists();
+    // const tracks = this.tracksService.findAllByIds(favoriteTracks);
+    // const albums = this.albumsService.findAllByIds(favoriteAlbums);
+    // const artists = this.artistsService.findAllByIds(favoriteArtists);
+    // return {
+    //   tracks,
+    //   albums,
+    //   artists,
+    // };
   }
 }

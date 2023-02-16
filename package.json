@@ -21,7 +21,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "typeorm": "typeorm-ts-node-esm",
     "migration:generate": "npm run typeorm migration:generate",
-    "migration:show": "npm run typeorm migration:show",
+    "migration:show": "npm run typeorm migration:show -- -d ./src/db/typeOrm.config.ts",
     "migration:run": "npm run typeorm migration:run -- -d ./src/db/typeOrm.config.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/db/typeOrm.config.ts",
     "migration:create": "npm run typeorm migration:create"
