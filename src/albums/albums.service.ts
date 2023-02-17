@@ -1,22 +1,12 @@
-// import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
-// import { v4 as uuidv4 } from 'uuid';
-// import { TracksService } from '../tracks/tracks.service';
-// import { FavoritesService } from '../favorites/favorites.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumsService {
-  // @Inject(forwardRef(() => TracksService))
-  // private readonly tracksService: TracksService;
-  // @Inject(forwardRef(() => FavoritesService))
-  // private readonly favoritesService: FavoritesService;
-  // private readonly albums: Album[] = [];
-
   constructor(
     @InjectRepository(Album)
     private albumRepository: Repository<Album>,
@@ -32,17 +22,12 @@ export class AlbumsService {
   }
 
   async findOne(id: string) {
-    return await this.albumRepository.findOne({ where: { id: id } });
+    const album = await this.albumRepository.findOne({ where: { id: id } });
+    if (album) {
+      return album;
+    }
+    return undefined;
   }
-
-  // findAllByIds(ids: Array<string>) {
-  //   const result = [];
-  //   ids.forEach((id) => {
-  //     const el = this.findOne(id);
-  //     result.push(el);
-  //   });
-  //   return result;
-  // }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto) {
     const updatedAlbum = await this.findOne(id);
@@ -61,12 +46,4 @@ export class AlbumsService {
       return 'success';
     }
   }
-
-  // async removeArtistId(id: string) {
-  //   const updatedTrack = await this.findOne(id);
-  //   return await this.update(id, {
-  //     ...updatedTrack,
-  //     artistId: null,
-  //   });
-  // }
 }

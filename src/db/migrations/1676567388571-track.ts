@@ -2,15 +2,15 @@ import {
   MigrationInterface,
   QueryRunner,
   Table,
-  TableColumn,
   TableForeignKey,
+  TableColumn,
 } from 'typeorm';
 
-export class album1676566301759 implements MigrationInterface {
+export class track1676567388571 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'album',
+        name: 'track',
         columns: [
           {
             name: 'id',
@@ -25,7 +25,7 @@ export class album1676566301759 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'year',
+            name: 'duration',
             type: 'int',
             isNullable: false,
           },
@@ -34,15 +34,23 @@ export class album1676566301759 implements MigrationInterface {
       true,
     );
     await queryRunner.addColumn(
-      'album',
+      'track',
       new TableColumn({
         name: 'artistId',
         type: 'uuid',
         isNullable: true,
       }),
     );
+    await queryRunner.addColumn(
+      'track',
+      new TableColumn({
+        name: 'albumId',
+        type: 'uuid',
+        isNullable: true,
+      }),
+    );
     await queryRunner.createForeignKey(
-      'album',
+      'track',
       new TableForeignKey({
         columnNames: ['artistId'],
         referencedColumnNames: ['id'],
@@ -50,9 +58,18 @@ export class album1676566301759 implements MigrationInterface {
         onDelete: 'SET NULL',
       }),
     );
+    await queryRunner.createForeignKey(
+      'track',
+      new TableForeignKey({
+        columnNames: ['albumId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'album',
+        onDelete: 'SET NULL',
+      }),
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('album');
+    await queryRunner.dropTable('track');
   }
 }

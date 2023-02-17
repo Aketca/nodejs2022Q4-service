@@ -1,5 +1,16 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity('favorite')
 export class Favorite {
-  artists: string[]; // favorite artists ids
-  albums: string[]; // favorite albums ids
-  tracks: string[]; // favorite tracks ids
+  @PrimaryGeneratedColumn('uuid')
+  id: string; // uuid v4
+
+  @Column()
+  artistId: string | null; // refers to Artist
+
+  @Column()
+  albumId: string | null; // refers to Album
+
+  @Column()
+  trackId: string | null; // refers to Track
 }

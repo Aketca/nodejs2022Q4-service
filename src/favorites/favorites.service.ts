@@ -1,127 +1,116 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Favorite } from './entities/favorite.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, IsNull, Not } from 'typeorm';
 import { TracksService } from '../tracks/tracks.service';
 import { AlbumsService } from '../albums/albums.service';
 import { ArtistsService } from '../artists/artists.service';
 
 @Injectable()
 export class FavoritesService {
-  @Inject(forwardRef(() => TracksService))
-  private readonly tracksService: TracksService;
-  @Inject(forwardRef(() => AlbumsService))
-  private readonly albumsService: AlbumsService;
-  @Inject(forwardRef(() => ArtistsService))
-  private readonly artistsService: ArtistsService;
-  private readonly favorites: Favorite = {
-    artists: [],
-    albums: [],
-    tracks: [],
-  };
+  constructor(
+    @Inject(TracksService)
+    private tracksService: TracksService,
+    @Inject(AlbumsService)
+    private albumsService: AlbumsService,
+    @Inject(ArtistsService)
+    private artistsService: ArtistsService,
+    @InjectRepository(Favorite)
+    private favoriteRepository: Repository<Favorite>,
+  ) {}
 
-  addTrack(id: string) {
-    const favoriteTracks = this.findAllTracks();
-    const track = this.tracksService.findOne(id);
-    if (track) {
-      favoriteTracks.push(id);
+  async addTrack(id: string) {
+    const track = await this.tracksService.findOne(id);
+    const favoriteTrack = await this.favoriteRepository.findOne({
+      where: { trackId: id },
+    });
+    if (track && !favoriteTrack) {
+      const createdFavoriteTrack = this.favoriteRepository.create({
+        trackId: id,
+      });
+      await this.favoriteRepository.save(createdFavoriteTrack);
       return track;
     }
     return 422;
   }
 
-  addAlbum(id: string) {
-    const favoriteAlbums = this.findAllAlbums();
-    const album = this.albumsService.findOne(id);
-    if (album) {
-      favoriteAlbums.push(id);
+  async addAlbum(id: string) {
+    const album = await this.albumsService.findOne(id);
+    const favoriteAlbum = await this.favoriteRepository.findOne({
+      where: { albumId: id },
+    });
+    if (album && !favoriteAlbum) {
+      const createdFavoriteAlbum = this.favoriteRepository.create({
+        albumId: id,
+      });
+      await this.favoriteRepository.save(createdFavoriteAlbum);
       return album;
     }
     return 422;
   }
 
-  addArtist(id: string) {
-    const favoriteArtists = this.findAllArtists();
-    const artist = this.artistsService.findOne(id);
-    if (artist) {
-      favoriteArtists.push(id);
+  async addArtist(id: string) {
+    const artist = await this.artistsService.findOne(id);
+    const favoriteArtist = await this.favoriteRepository.findOne({
+      where: { artistId: id },
+    });
+    if (artist && !favoriteArtist) {
+      const createdFavoriteArtist = this.favoriteRepository.create({
+        artistId: id,
+      });
+      await this.favoriteRepository.save(createdFavoriteArtist);
       return artist;
     }
     return 422;
   }
 
-  removeArtist(id: string) {
-    const index = this.favorites.artists.findIndex((item) => item === id);
-    if (index > -1) {
-      this.favorites.artists.splice(index, 1);
+  async deleteArtist(id: string) {
+    const result = await this.favoriteRepository.delete({ artistId: id });
+    if (result.affected === 0) {
+      return undefined;
+    } else {
+      return 'success';
     }
   }
 
-  deleteArtist(id: string) {
-    const favoriteArtists = this.findAllArtists();
-    const index = favoriteArtists.findIndex((item) => item === id);
-    if (index > -1) {
-      favoriteArtists.splice(index, 1);
-      return favoriteArtists;
-    }
-    return undefined;
-  }
-
-  removeAlbum(id: string) {
-    const index = this.favorites.albums.findIndex((item) => item === id);
-    if (index > -1) {
-      this.favorites.albums.splice(index, 1);
+  async deleteAlbum(id: string) {
+    const result = await this.favoriteRepository.delete({ albumId: id });
+    if (result.affected === 0) {
+      return undefined;
+    } else {
+      return 'success';
     }
   }
 
-  deleteAlbum(id: string) {
-    const favoriteAlbums = this.findAllAlbums();
-    const index = favoriteAlbums.findIndex((item) => item === id);
-    if (index > -1) {
-      favoriteAlbums.splice(index, 1);
-      return favoriteAlbums;
-    }
-    return undefined;
-  }
-
-  removeTrack(id: string) {
-    const index = this.favorites.tracks.findIndex((item) => item === id);
-    if (index > -1) {
-      this.favorites.tracks.splice(index, 1);
+  async deleteTrack(id: string) {
+    const result = await this.favoriteRepository.delete({ trackId: id });
+    if (result.affected === 0) {
+      return undefined;
+    } else {
+      return 'success';
     }
   }
 
-  deleteTrack(id: string) {
-    const favoriteTracks = this.findAllTracks();
-    const index = favoriteTracks.findIndex((item) => item === id);
-    if (index > -1) {
-      favoriteTracks.splice(index, 1);
-      return favoriteTracks;
-    }
-    return undefined;
-  }
-
-  findAllArtists() {
-    return this.favorites.artists;
-  }
-
-  findAllAlbums() {
-    return this.favorites.albums;
-  }
-
-  findAllTracks() {
-    return this.favorites.tracks;
-  }
-
-  returnAllFavorites() {
-    // const favoriteTracks = this.findAllTracks();
-    // const favoriteAlbums = this.findAllAlbums();
-    // const favoriteArtists = this.findAllArtists();
-    // const tracks = this.tracksService.findAllByIds(favoriteTracks);
-    // const albums = this.albumsService.findAllByIds(favoriteAlbums);
-    // const artists = this.artistsService.findAllByIds(favoriteArtists);
-    // return {
-    //   tracks,
-    //   albums,
-    //   artists,
-    // };
+  async returnAllFavorites() {
+    const tracks = await this.favoriteRepository.find({
+      where: {
+        trackId: Not(IsNull()),
+      },
+    });
+    const albums = await this.favoriteRepository.find({
+      where: {
+        albumId: Not(IsNull()),
+      },
+    });
+    const artists = await this.favoriteRepository.find({
+      where: {
+        artistId: Not(IsNull()),
+      },
+    });
+    return {
+      tracks,
+      albums,
+      artists,
+    };
   }
 }
