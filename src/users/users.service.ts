@@ -15,8 +15,6 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const user = {
       ...createUserDto,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
       version: 1,
     };
     const createdUser = this.userRepository.create(user);
@@ -43,7 +41,6 @@ export class UsersService {
     if (updatedUser) {
       if (updateUserDto.oldPassword === updatedUser.password) {
         const user = {
-          updatedAt: Date.now(),
           version: updatedUser.version + 1,
           password: updateUserDto.newPassword,
         };

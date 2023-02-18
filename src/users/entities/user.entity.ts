@@ -1,27 +1,33 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string; // uuid v4
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   login: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column()
-  version: number; // integer number, increments on update
+  @Column({ type: 'integer', default: 1 })
+  version: number;
 
-  @Column()
-  createdAt: number; // timestamp of creation
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @Column()
-  updatedAt: number; // timestamp of last update
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   toResponse() {
     const { id, login, version, createdAt, updatedAt } = this;
-    return { id, login, version, createdAt, updatedAt };
+    return { id, login, version, createdAt: +createdAt, updatedAt: +updatedAt };
   }
 }

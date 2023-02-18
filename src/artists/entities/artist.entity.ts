@@ -5,9 +5,9 @@ export class Artist {
   @PrimaryGeneratedColumn('uuid')
   id: string; // uuid v4
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ default: false })
+  @Column({ type: 'bool', default: false })
   grammy: boolean;
 }
