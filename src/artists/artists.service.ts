@@ -3,7 +3,7 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './entities/artist.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {In, Repository} from 'typeorm';
 
 @Injectable()
 export class ArtistsService {
@@ -19,6 +19,10 @@ export class ArtistsService {
 
   async findAll() {
     return await this.artistRepository.find();
+  }
+
+  async findAllByParams(data: string[]) {
+    return await this.artistRepository.find({ where: { id: In(data) } });
   }
 
   async findOne(id: string) {

@@ -3,7 +3,7 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './entities/track.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class TracksService {
@@ -19,6 +19,10 @@ export class TracksService {
 
   async findAll() {
     return await this.trackRepository.find();
+  }
+
+  async findAllByParams(data: string[]) {
+    return await this.trackRepository.find({ where: { id: In(data) } });
   }
 
   async findOne(id: string) {

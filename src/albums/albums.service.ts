@@ -3,7 +3,7 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './entities/album.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {In, Repository} from 'typeorm';
 
 @Injectable()
 export class AlbumsService {
@@ -19,6 +19,10 @@ export class AlbumsService {
 
   async findAll() {
     return await this.albumRepository.find();
+  }
+
+  async findAllByParams(data: string[]) {
+    return await this.albumRepository.find({ where: { id: In(data) } });
   }
 
   async findOne(id: string) {

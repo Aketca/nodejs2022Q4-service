@@ -107,10 +107,16 @@ export class FavoritesService {
         artistId: Not(IsNull()),
       },
     });
+    const tracksIds = tracks.map((item) => item.trackId);
+    const albumsIds = albums.map((item) => item.albumId);
+    const artistsIds = artists.map((item) => item.artistId);
+    const tracksResult = await this.tracksService.findAllByParams(tracksIds);
+    const albumResult = await this.albumsService.findAllByParams(albumsIds);
+    const artistsResult = await this.artistsService.findAllByParams(artistsIds);
     return {
-      tracks,
-      albums,
-      artists,
+      tracks: tracksResult,
+      albums: albumResult,
+      artists: artistsResult,
     };
   }
 }
