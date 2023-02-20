@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: ./docker/app/Dockerfile
     container_name: app
+    restart: always
     ports:
       - ${PORT}:${PORT}
     env_file:
@@ -24,12 +25,18 @@ services:
       context: .
       dockerfile: ./docker/db/Dockerfile
     container_name: db
+    restart: always
+    command: [
+      "postgres",
+      "-c", "logging_collector=on",
+      "-c", "log_directory=logs"
+    ]
     env_file:
       - .env
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
-      - postgres-data:/var/lib/postgresql/data/
+      - ./docker/db/data:/var/lib/postgresql/data/
     networks:
       - mynetwork
 

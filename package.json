@@ -24,7 +24,8 @@
     "migration:show": "npm run typeorm migration:show -- -d ./src/db/typeOrm.config.ts",
     "migration:run": "npm run typeorm migration:run -- -d ./src/db/typeOrm.config.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/db/typeOrm.config.ts",
-    "migration:create": "npm run typeorm migration:create"
+    "migration:create": "npm run typeorm migration:create",
+    "audit": "npm-check --skip-unused --skip-crowded"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -62,6 +63,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.2.5",
+    "npm-check": "^6.0.1",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.2.3",
