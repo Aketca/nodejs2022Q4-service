@@ -1,72 +1,34 @@
-# Home Library Service
-
-## Prerequisites
-
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-
-## Downloading
-
+## Как запустить
 ```
-git clone {repository URL}
+Склонировали репозиторий, перешли в ветку PostgreSQL_docker
 ```
-
-## Installing NPM modules
-
 ```
-npm install
+Переменные (такие как порт, название базы данных итд) указанны в .еnv файле. Переименуйте .env.example в .env
 ```
-
-## Running application
-
 ```
-npm start
+Запускаем у себя докер
 ```
-
-After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
-For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Testing
-
-After application running open new terminal and enter:
-
-To run all tests without authorization
-
 ```
-npm run test
+Находясь в корне репозитория пишем команду "docker-compose up -d --build"
 ```
-
-To run only one of all test suites
-
 ```
-npm run test -- <path to suite>
+После окончания билда подымается два образа db и app, заходим в app командой "docker exec -it app /bin/sh" (может быть "docker exec -it app /bin/bash")
 ```
-
-To run all test with authorization
-
 ```
-npm run test:auth
+Накатываем миграции командой "npm run migration:run"
 ```
-
-To run only specific test suite with authorization
-
 ```
-npm run test:auth -- <path to suite>
+Проверяем работоспособность запуском тестов "npm run test" либо через postman отдельный функционал (если нужно).
 ```
-
-### Auto-fix and format
-
 ```
-npm run lint
+Не забываем, что контейнеру нужно время запуститься + запустить nest.js проект (nest в дев версии запускается, потому запускается дольше). Тесты запускайте после успешного старта nest.js в контейнере (можно посмотреть в приложении докер актуальное состояние)
 ```
-
 ```
-npm run format
+База данных хранится в docker/db/data, логи в docker/db/data/logs
 ```
-
-### Debugging in VSCode
-
-Press <kbd>F5</kbd> to debug.
-
-For more information, visit: https://code.visualstudio.com/docs/editor/debugging
+```
+Для аудита npm пакетов находясь в образе app напишите команду "npm run audit"
+```
+```
+Размер контейнеров можно проверить командой "docker-compose images"
+```
