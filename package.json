@@ -25,7 +25,8 @@
     "migration:run": "npm run typeorm migration:run -- -d ./src/db/typeOrm.config.ts",
     "migration:revert": "npm run typeorm migration:revert -- -d ./src/db/typeOrm.config.ts",
     "migration:create": "npm run typeorm migration:create",
-    "audit": "npm-check --skip-unused --skip-crowded"
+    "audit": "npm-check --skip-unused --skip-crowded",
+    "install_start": "npm install && npm run start:dev"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
