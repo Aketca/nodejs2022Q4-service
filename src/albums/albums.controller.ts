@@ -9,13 +9,16 @@ import {
   UseInterceptors,
   ParseUUIDPipe,
   HttpCode,
+  UseFilters,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { ResponseInterceptor } from '../response.interceptor';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 @Controller('album')
+@UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}

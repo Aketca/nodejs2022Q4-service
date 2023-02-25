@@ -7,11 +7,14 @@ import {
   UseInterceptors,
   ParseUUIDPipe,
   HttpCode,
+  UseFilters,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { ResponseInterceptor } from '../response.interceptor';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 @Controller('favs')
+@UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}

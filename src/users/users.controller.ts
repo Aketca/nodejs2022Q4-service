@@ -9,13 +9,17 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   HttpCode,
+  UseFilters,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ResponseInterceptor } from '../response.interceptor';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 @Controller('user')
+@UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

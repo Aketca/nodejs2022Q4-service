@@ -9,13 +9,16 @@ import {
   ParseUUIDPipe,
   HttpCode,
   UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { ResponseInterceptor } from '../response.interceptor';
+import { HttpExceptionFilter } from '../http-exception.filter';
 
 @Controller('track')
+@UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}

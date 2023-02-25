@@ -6,10 +6,11 @@ import { Favorite } from './entities/favorite.entity';
 import { TracksModule } from '../tracks/tracks.module';
 import { AlbumsModule } from '../albums/albums.module';
 import { ArtistsModule } from '../artists/artists.module';
+import { LoggingService } from '../logging.service';
 
 @Module({
   controllers: [FavoritesController],
-  providers: [FavoritesService],
+  providers: [FavoritesService, LoggingService],
   imports: [
     TypeOrmModule.forFeature([Favorite]),
     TracksModule,
