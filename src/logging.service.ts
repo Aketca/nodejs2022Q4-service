@@ -66,7 +66,7 @@ export class LoggingService implements LoggerService {
   }
 
   writeErrorLog(exception, data) {
-    const timestamp = new Date().toISOString().replace(/:/g, '-');
+    const timestamp = new Date().toISOString();
     const { url, params, body, method, statusCode } = data;
     const logMessage = `${timestamp}: ${exception}, Request with url: ${JSON.stringify(
       url,
@@ -77,7 +77,7 @@ export class LoggingService implements LoggerService {
   }
 
   writeRequestLog(data) {
-    const timestamp = new Date().toISOString().replace(/:/g, '-');
+    const timestamp = new Date().toISOString();
     const { url, params, body, method, statusCode } = data;
     const logMessage = `${timestamp}: Request with url: ${JSON.stringify(
       url,
