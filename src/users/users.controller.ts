@@ -10,7 +10,6 @@ import {
   UseInterceptors,
   HttpCode,
   UseFilters,
-  ForbiddenException,
 } from '@nestjs/common';
 import { ResponseInterceptor } from '../response.interceptor';
 import { UsersService } from './users.service';

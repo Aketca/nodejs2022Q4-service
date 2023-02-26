@@ -8,6 +8,7 @@ import { ArtistsModule } from './artists/artists.module';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './db/typeOrm.config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { config } from './db/typeOrm.config';
     AlbumsModule,
     FavoritesModule,
     TypeOrmModule.forRoot(config),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

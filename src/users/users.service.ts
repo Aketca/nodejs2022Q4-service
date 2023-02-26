@@ -26,6 +26,16 @@ export class UsersService {
     return users.map((user) => user.toResponse());
   }
 
+  async findOneByLogin(username: string) {
+    const user = await this.userRepository.findOne({
+      where: { login: username },
+    });
+    if (user) {
+      return user;
+    }
+    return undefined;
+  }
+
   async findOne(id: string) {
     const user = await this.userRepository.findOne({ where: { id: id } });
     if (user) {
