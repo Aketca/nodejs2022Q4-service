@@ -9,7 +9,8 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   HttpCode,
-  UseFilters, UseGuards,
+  UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { ResponseInterceptor } from '../response.interceptor';
 import { UsersService } from './users.service';
