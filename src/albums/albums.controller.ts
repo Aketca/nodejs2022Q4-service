@@ -10,15 +10,18 @@ import {
   ParseUUIDPipe,
   HttpCode,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ResponseInterceptor } from '../response.interceptor';
 import { HttpExceptionFilter } from '../http-exception.filter';
 
 @Controller('album')
 @UseFilters(HttpExceptionFilter)
+@UseGuards(JwtAuthGuard)
 @UseInterceptors(ResponseInterceptor)
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}

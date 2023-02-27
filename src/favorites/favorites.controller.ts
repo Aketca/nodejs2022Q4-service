@@ -8,12 +8,15 @@ import {
   ParseUUIDPipe,
   HttpCode,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { ResponseInterceptor } from '../response.interceptor';
 import { HttpExceptionFilter } from '../http-exception.filter';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('favs')
+@UseGuards(JwtAuthGuard)
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class FavoritesController {

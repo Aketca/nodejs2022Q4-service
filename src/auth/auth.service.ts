@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import {
+  Injectable,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +26,28 @@ export class AuthService {
     const payload = { username: user.login, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      refresh_token: this.jwtService.sign(payload, { expiresIn: '600s' }),
     };
+  }
+
+  async refresh(data: any) {
+    const { refreshToken } = data;
+    if (!refreshToken) {
+      return new ForbiddenException();
+    }
+    try {
+      const res = this.jwtService.verify(refreshToken);
+      if (Math.round(new Date().getTime() / 1000) - res.exp < 0) {
+        const payload = { username: res.username, sub: res.sub };
+        return {
+          access_token: this.jwtService.sign(payload),
+          refresh_token: this.jwtService.sign(payload, { expiresIn: '600s' }),
+        };
+      } else {
+        return new ForbiddenException();
+      }
+    } catch (err) {
+      return new UnauthorizedException();
+    }
   }
 }

@@ -1,16 +1,17 @@
 import {
   Controller,
-  Get,
   Request,
   Post,
   UseGuards,
   Body,
+  HttpCode,
 } from '@nestjs/common';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
+import { RefreshDto } from './auth/dto/refresh';
 
 @Controller()
 export class AppController {
@@ -30,14 +31,9 @@ export class AppController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('auth/profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Post('auth/refresh')
+  @HttpCode(200)
+  getProfile(@Body() refreshDto: RefreshDto) {
+    return this.authService.refresh(refreshDto);
   }
-
-  // @Get()
-  // getHello(): string {
-  //   return this.appService.getHello();
-  // }
 }

@@ -9,15 +9,17 @@ import {
   ParseUUIDPipe,
   UseInterceptors,
   HttpCode,
-  UseFilters,
+  UseFilters, UseGuards,
 } from '@nestjs/common';
 import { ResponseInterceptor } from '../response.interceptor';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpExceptionFilter } from '../http-exception.filter';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class UsersController {

@@ -10,14 +10,17 @@ import {
   ParseUUIDPipe,
   HttpCode,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { ResponseInterceptor } from '../response.interceptor';
 import { HttpExceptionFilter } from '../http-exception.filter';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('artist')
+@UseGuards(JwtAuthGuard)
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(ResponseInterceptor)
 export class ArtistsController {
