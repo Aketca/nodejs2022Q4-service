@@ -25,8 +25,8 @@ export class AuthService {
   async login(user: any) {
     const payload = { username: user.login, sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload, { expiresIn: '600s' }),
+      accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '600s' }),
     };
   }
 
@@ -40,8 +40,8 @@ export class AuthService {
       if (Math.round(new Date().getTime() / 1000) - res.exp < 0) {
         const payload = { username: res.username, sub: res.sub };
         return {
-          access_token: this.jwtService.sign(payload),
-          refresh_token: this.jwtService.sign(payload, { expiresIn: '600s' }),
+          accessToken: this.jwtService.sign(payload),
+          refreshToken: this.jwtService.sign(payload, { expiresIn: '600s' }),
         };
       } else {
         return new ForbiddenException();
